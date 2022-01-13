@@ -11,7 +11,7 @@
       tags: python
 
     - name: register awxkit version
-      ansible.builtin.command: "/usr/libexec/platform-python -c 'import pkg_resources ; import awxkit ; print(pkg_resources.get_distribution(\"awxkit\").version)'"
+      ansible.builtin.command: "/usr/bin/python3.8 -c 'import pkg_resources ; import awxkit ; print(pkg_resources.get_distribution(\"awxkit\").version)'"
       register: reg_version
       tags: awxkit
 

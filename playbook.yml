@@ -9,6 +9,15 @@
         msg: "{{ ansible_playbook_python }}"
         verbosity: 2
 
+    - name: register awxkit version
+      ansible.builtin.command: "/usr/libexec/platform-python -c 'import pkg_resources ; import awxkit ; print(pkg_resources.get_distribution(\"awxkit\").version)'"
+      register: reg_version
+
+    - name: debug awxkit version
+      debug:
+        var: reg_version
+        verbosity: 2
+
     - name: controller export all assets
       ansible.controller.export:
         all: true

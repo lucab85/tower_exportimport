@@ -1,0 +1,32 @@
+--- 
+- name: controller export and import test
+  hosts: all
+  vars:
+    ansible_python_interpreter: "{{ ansible_playbook_python }}"
+  tasks:
+    - name: debug ansible_playbook_python
+      debug:
+        msg: "{{ ansible_playbook_python }}"
+        verbosity: 2
+
+    - name: controller export all assets
+      ansible.controller.export:
+        all: true
+        controller_username: "{{ lookup('env', 'CONTROLLER_USERNAME') }}"
+        controller_password: "{{ lookup('env', 'CONTROLLER_PASSWORD') }}"
+        controller_host: "{{ lookup('env', 'CONTROLLER_HOST') }}"
+        validate_certs: "{{ lookup('env', 'CONTROLLER_VERIFY_SSL') }}"
+      register: export_output
+
+    - name: debug print
+      ansible.builtin.debug:
+        var: export_output
+        verbosity: 2
+
+    - name: Import all assets from our export
+      ansible.controller.import:
+        assets: "{{ export_output.assets }}"
+        controller_username: "{{ lookup('env', 'CONTROLLER_USERNAME') }}"
+        controller_password: "{{ lookup('env', 'CONTROLLER_PASSWORD') }}"
+        controller_host: "{{ lookup('env', 'CONTROLLER_HOST') }}"
+        validate_certs: "{{ lookup('env', 'CONTROLLER_VERIFY_SSL') }}"

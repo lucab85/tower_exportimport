@@ -8,15 +8,18 @@
       debug:
         msg: "{{ ansible_playbook_python }}"
         verbosity: 2
+      tags: python
 
     - name: register awxkit version
       ansible.builtin.command: "/usr/libexec/platform-python -c 'import pkg_resources ; import awxkit ; print(pkg_resources.get_distribution(\"awxkit\").version)'"
       register: reg_version
+      tags: awxkit
 
     - name: debug awxkit version
       debug:
         var: reg_version
         verbosity: 2
+      tags: awxkit
 
     - name: controller export all assets
       ansible.controller.export:
@@ -26,11 +29,13 @@
         controller_host: "{{ lookup('env', 'CONTROLLER_HOST') }}"
         validate_certs: "{{ lookup('env', 'CONTROLLER_VERIFY_SSL') }}"
       register: export_output
+      tags: export
 
     - name: debug print
       ansible.builtin.debug:
         var: export_output
         verbosity: 2
+      tags: export
 
     - name: Import all assets from our export
       ansible.controller.import:
@@ -39,3 +44,4 @@
         controller_password: "{{ lookup('env', 'CONTROLLER_PASSWORD') }}"
         controller_host: "{{ lookup('env', 'CONTROLLER_HOST') }}"
         validate_certs: "{{ lookup('env', 'CONTROLLER_VERIFY_SSL') }}"
+      tags: import
